@@ -88,6 +88,10 @@ class FView extends StatefulWidget {
   const FView({
     super.key,
     required this.player,
+    required this.middle,
+    required this.left_right,
+    required this.aspectvideo,
+    required this.isVr,
     this.width,
     this.height,
     this.fit = FFit.contain,
@@ -98,6 +102,10 @@ class FView extends StatefulWidget {
     this.fs = true,
     this.onDispose,
   });
+  int middle; //瞳距
+  int left_right; //视频大小
+  double aspectvideo; //视频比例
+  bool isVr; //VR模式
 
   /// The player that need display video by this [FView].
   /// Will be passed to [panelBuilder].
@@ -244,6 +252,10 @@ class _FViewState extends State<FView> {
             fullScreen: true,
             cover: widget.cover,
             data: _fData,
+            middle: widget.middle,
+            left_right: widget.left_right,
+            aspectvideo: widget.aspectvideo,
+            isVr: widget.isVr,
           ),
         );
       },
@@ -309,6 +321,10 @@ class _FViewState extends State<FView> {
               fullScreen: false,
               cover: widget.cover,
               data: _fData,
+              middle: widget.middle,
+              left_right: widget.left_right,
+              aspectvideo: widget.aspectvideo,
+              isVr: widget.isVr,
             ),
     );
   }
@@ -320,12 +336,20 @@ class _InnerFView extends StatefulWidget {
     required this.fullScreen,
     required this.cover,
     required this.data,
+    required this.middle,
+    required this.left_right,
+    required this.aspectvideo,
+    required this.isVr,
   });
 
   final _FViewState fViewState;
   final bool fullScreen;
   final ImageProvider? cover;
   final FData data;
+  int middle;
+  int left_right;
+  double aspectvideo;
+  bool isVr;
 
   @override
   __InnerFViewState createState() => __InnerFViewState();
@@ -511,7 +535,9 @@ class __InnerFViewState extends State<_InnerFView> {
       final Rect pos = Rect.fromLTWH(
           offset.dx, offset.dy, childSize.width, childSize.height);
 
-      List ws = <Widget>[
+      List ws = !widget.isVr
+          
+          ？<Widget>[
         Container(
           width: constraints.maxWidth,
           height: constraints.maxHeight,
@@ -523,7 +549,54 @@ class __InnerFViewState extends State<_InnerFView> {
               color: const Color(0xFF000000),
               child: buildTexture(),
             )),
-      ];
+      
+          :<Widget>[
+              Container(
+                width: constraints.maxWidth,
+                height: constraints.maxHeight,
+                color: _color,
+              ),
+              Row(children: [
+                Container(
+                  width: constraints.maxWidth / 2,
+                  height: constraints.maxHeight,
+                  child: Row(children: [
+                    Expanded(
+                        child: SizedBox(height: constraints.maxHeight),
+                        flex:
+                            (constraints.maxWidth / 2 * widget.left_right / 100).toInt()),
+                    Expanded(
+                        child: AspectRatio(
+                            child: buildTexture(),
+                            aspectRatio: widget.aspectvideo),
+                        flex: (constraints.maxWidth / 2 -
+                            (constraints.maxWidth /
+                                2 *
+                                widget.left_right /
+                                100)).toInt()),
+                  ]),
+                ),
+                Container(
+                  width: constraints.maxWidth / 2,
+                  height: constraints.maxHeight,
+                  child: Row(children: [
+                    Expanded(
+                      child: AspectRatio(
+                          child: buildTexture(),
+                          aspectRatio: widget.aspectvideo),
+                      flex: (constraints.maxWidth / 2 -
+                          (constraints.maxWidth / 2 * widget.left_right / 100)).toInt(),),
+                      Expanded(
+                          child: SizedBox(height: constraints.maxHeight),
+                          flex: (constraints.maxWidth /
+                              2 *
+                              widget.left_right /
+                              100).toInt()),
+                  ]),
+                ),
+              ]),
+          
+          ];
 
       if (widget.cover != null && !value.videoRenderStart) {
         ws.add(Positioned.fromRect(
