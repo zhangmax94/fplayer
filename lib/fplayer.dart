@@ -5,6 +5,7 @@ import 'dart:collection';
 import 'dart:core';
 import 'dart:io';
 import 'dart:math';
+import 'package:wakelock/wakelock.dart';
 
 import 'package:battery_plus/battery_plus.dart';
 // import 'package:connectivity_plus/connectivity_plus.dart';
