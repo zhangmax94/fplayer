@@ -424,6 +424,10 @@ class __FPanel2State extends State<_FPanel2> {
         prepared != _prepared ||
         completed != _isPlayCompleted) {
       setState(() {
+      if (isPlayError || completed || !playing){
+          Wakelock.disable();
+        }else{Wakelock.enable();}
+      
         _isPlayError = isPlayError;
         _playing = playing;
         _prepared = prepared;
