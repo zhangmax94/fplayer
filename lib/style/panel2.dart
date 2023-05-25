@@ -533,6 +533,7 @@ class __FPanel2State extends State<_FPanel2> {
       if (d.localPosition.dx > panelWidth() / 2) {
         // right, volume
         _dragLeft = false;
+        FVolume.setUIMode(FVolume.neverShowUI);
         FVolume.getVol().then((v) {
           if (!widget.data.contains(FData._fViewPanelVolume)) {
             widget.data.setValue(FData._fViewPanelVolume, v);
@@ -587,6 +588,7 @@ class __FPanel2State extends State<_FPanel2> {
   }
 
   void onVerticalDragEndFun(DragEndDetails e) {
+    FVolume.setUIMode(FVolume.alwaysShowUI);
     _volume = null;
     _brightness = null;
   }
@@ -1112,7 +1114,7 @@ class __FPanel2State extends State<_FPanel2> {
 
     if (fullScreen) {
       rightWidget = Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
+        padding: const EdgeInsets.only(left: 10, right: 25, top: 8, bottom: 8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -1153,7 +1155,7 @@ class __FPanel2State extends State<_FPanel2> {
         ),
       );
       leftWidget = Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
+        padding: const EdgeInsets.only(left: 25, right: 10, top: 8, bottom: 8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
